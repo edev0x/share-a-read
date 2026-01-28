@@ -1,0 +1,51 @@
+######################################
+# Global
+######################################
+namespace = "infra"
+host = "https://127.0.0.1:57529"
+
+######################################
+# Postgres instances
+######################################
+postgres_instances = {
+  warehouse = {
+    admin_password = "warehouse-service-db-admin-password"
+
+    databases = {
+      app = {
+        name     = "warehouse_db"
+        user     = "warehouse_user"
+        password = "warehouse_user_pass"
+      }
+    }
+  }
+
+  kong-postgres = {
+    admin_password = "kong_admin_pass"
+
+    databases = {
+      kong = {
+        name     = "kong_db"
+        user     = "kong"
+        password = "kong_pass"
+      }
+    }
+  }
+}
+
+######################################
+# Kong configuration
+######################################
+kong = {
+  pg_database = "kong_db"
+  pg_user     = "kong"
+  pg_password = "kong_pass"
+}
+
+######################################
+# RabbitMQ configuration
+######################################
+rabbitmq = {
+  username = "rabbitmq"
+  password = "rabbitmq_pass"
+}
