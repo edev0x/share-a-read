@@ -4,6 +4,8 @@ resource "kubernetes_job" "kong_migrations" {
     namespace = var.namespace
   }
 
+  depends_on = [var.postgres_service_name]
+
   spec {
     template {
       metadata {
@@ -16,6 +18,17 @@ resource "kubernetes_job" "kong_migrations" {
         init_container {
           name  = "wait-for-postgres"
           image = "busybox:latest"
+
+          env {
+            name  = "KONG_PG_HOST"
+            value = "kong-postgres"
+          }
+
+          env {
+            name  = "KONG_PG_PORT"
+            value = "5432"
+          }
+
           command = [
             "sh",
             "-c",
@@ -25,7 +38,7 @@ resource "kubernetes_job" "kong_migrations" {
 
         container {
           name  = "kong-migrations"
-          image = "kong:3.6"
+          image = "kong:3.9"
 
           env {
             name  = "KONG_DATABASE"

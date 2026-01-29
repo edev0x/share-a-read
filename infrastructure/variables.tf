@@ -5,7 +5,7 @@ variable "host" {
 
 variable "namespace" {
   type    = string
-  default = "infra"
+  default = "sharearead-infra"
 }
 
 variable "postgres_instances" {
