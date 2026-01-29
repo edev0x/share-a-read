@@ -8,8 +8,6 @@ This repository contains the following structure:
 ├── frontend/          # Angular (20+) web application
 ├── backend/           # Java + Spring Boot services
 ├── infrastructure/    # IaC (Terraform)
-├── docker/            # Docker & Docker Compose configurations
-├── scripts/           # Utility scripts (optional)
 └── README.md
 ```
 
