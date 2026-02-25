@@ -1,4 +1,4 @@
-package com.sharearead.bookscatalog.infrastructure.adapter.out.persistence.entities;
+package com.sharearead.bookscatalog.infrastructure.adapters.out.persistence.entities;
 
 import java.time.Instant;
 
