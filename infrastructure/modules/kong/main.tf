@@ -82,13 +82,13 @@ resource "kubernetes_deployment" "kong" {
           ## PROXY LISTENER
           env {
             name  = "KONG_PROXY_LISTEN"
-            value = "0.0.0.0:8000"
+            value = "0.0.0.0:8000, 0.0.0.0:8443 ssl"
           }
 
           # Admin LISTENER
           env {
             name  = "KONG_ADMIN_LISTEN"
-            value = "0.0.0.0:8001"
+            value = "0.0.0.0:8001, 0.0.0.0:8444 ssl"
           }
 
           env {
@@ -96,20 +96,26 @@ resource "kubernetes_deployment" "kong" {
             value = "0.0.0.0/0,::/0"
           }
 
+          # Kong manager LISTENER
+          env {
+            name  = "KONG_ADMIN_GUI_LISTEN"
+            value = "0.0.0.0:8002, 0.0.0.0:8445 ssl"
+          }
+
           env {
             name  = "KONG_REAL_IP_HEADER"
             value = "X-Forwarded-For"
           }
 
-          # Kong manager LISTENER
-          env {
-            name  = "KONG_ADMIN_GUI_LISTEN"
-            value = "0.0.0.0:8002"
-          }
 
           env {
             name  = "KONG_ADMIN_GUI_URL"
             value = "https://gui.local.dev"
+          }
+
+          env {
+            name = "KONG_ADMIN_GUI_API_URL"
+            value = "https://admin.local.dev"
           }
 
           env {

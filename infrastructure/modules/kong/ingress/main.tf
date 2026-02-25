@@ -43,10 +43,6 @@ resource "kubernetes_ingress_v1" "admin" {
   metadata {
     name      = "kong-admin"
     namespace = var.namespace
-
-    annotations = {
-      "nginx.ingress.kubernetes.io/whitelist-source-range" = "192.168.49.0/24"
-    }
   }
 
   spec {
