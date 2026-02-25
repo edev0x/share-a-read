@@ -41,36 +41,23 @@ resource "kubernetes_deployment" "kong" {
           name  = "kong"
           image = "kong:3.9"
 
-          # Proxy
-          env {
-            name  = "KONG_PROXY_LISTEN"
-            value = "0.0.0.0:8000"
+          ## -------------
+          # REQUIRED PORTS FOR KONG SERVICES
+          ## -------------
+          port {
+            name           = "proxy"
+            container_port = 8000
           }
 
-          # Admin API
-          env {
-            name  = "KONG_ADMIN_LISTEN"
-            value = "0.0.0.0:8001"
+          port {
+            name           = "admin-api"
+            container_port = 8001
           }
 
-          # Kong manager GUI
-          env {
-            name  = "KONG_ADMIN_GUI_LISTEN"
-            value = "0.0.0.0:8002"
+          port {
+            name           = "admin-gui"
+            container_port = 8002
           }
-
-          # URLs for port-forward access
-          env {
-            name  = "KONG_ADMIN_GUI_URL"
-            value = "http://localhost:8002"
-          }
-
-          env {
-            name  = "KONG_ADMIN_API_URI"
-            value = "http://localhost:8001"
-          }
-
-
           env {
             name  = "KONG_DATABASE"
             value = "postgres"
@@ -91,6 +78,51 @@ resource "kubernetes_deployment" "kong" {
             value = "kong_db"
           }
 
+          ## NGINX TLS
+          ## PROXY LISTENER
+          env {
+            name  = "KONG_PROXY_LISTEN"
+            value = "0.0.0.0:8000"
+          }
+
+          # Admin LISTENER
+          env {
+            name  = "KONG_ADMIN_LISTEN"
+            value = "0.0.0.0:8001"
+          }
+
+          env {
+            name  = "KONG_TRUSTED_IPS"
+            value = "0.0.0.0/0,::/0"
+          }
+
+          env {
+            name  = "KONG_REAL_IP_HEADER"
+            value = "X-Forwarded-For"
+          }
+
+          # Kong manager LISTENER
+          env {
+            name  = "KONG_ADMIN_GUI_LISTEN"
+            value = "0.0.0.0:8002"
+          }
+
+          env {
+            name  = "KONG_ADMIN_GUI_URL"
+            value = "https://gui.local.dev"
+          }
+
+          env {
+            name  = "KONG_ADMIN_API_URL"
+            value = "https://admin.local.dev"
+          }
+
+          env {
+            name  = "KONG_PROXY_URL"
+            value = "https://api.local.dev"
+          }
+
+
           env {
             name = "KONG_PG_USER"
             value_from {
@@ -110,56 +142,68 @@ resource "kubernetes_deployment" "kong" {
               }
             }
           }
-
-          port {
-            name           = "proxy"
-            container_port = 8000
-          }
-
-          port {
-            name           = "admin-api"
-            container_port = 8001
-          }
-
-          port {
-            name           = "admin-gui"
-            container_port = 8002
-          }
         }
       }
     }
   }
 }
 
-resource "kubernetes_service" "kong" {
+
+## -------------
+## KONG PROXY
+## -------------
+resource "kubernetes_service" "proxy" {
   metadata {
-    name      = "kong"
+    name      = "kong-proxy"
     namespace = var.namespace
   }
 
   spec {
-    selector = {
-      app = "kong"
-    }
+    selector = { app = "kong" }
 
     port {
-      name        = "proxy"
       port        = 8000
       target_port = 8000
     }
+  }
+}
+
+
+## -------------
+## KONG ADMIN
+## -------------
+resource "kubernetes_service" "admin" {
+
+  metadata {
+    name      = "kong-admin"
+    namespace = var.namespace
+  }
+
+  spec {
+    selector = { app = "kong" }
 
     port {
-      name        = "admin-api"
       port        = 8001
       target_port = 8001
     }
+  }
+}
+
+## -------------
+## KONG MANAGER GUI
+## -------------
+resource "kubernetes_service" "manager" {
+  metadata {
+    name      = "kong-admin-gui"
+    namespace = var.namespace
+  }
+
+  spec {
+    selector = { app = "kong" }
 
     port {
-      name        = "admin-gui"
       port        = 8002
       target_port = 8002
     }
-
-    type = "ClusterIP"
   }
 }

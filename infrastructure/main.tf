@@ -19,6 +19,11 @@ module "rabbitmq" {
   depends_on = [module.namespace]
 }
 
+module "kong-secrets" {
+  source = "./modules/kong/secrets"
+  namespace = var.namespace
+}
+
 module "kong" {
   source    = "./modules/kong"
   namespace = var.namespace
@@ -28,6 +33,14 @@ module "kong" {
 
   depends_on = [
     module.namespace,
-    module.postgres
+    module.postgres,
+    module.kong-secrets
   ]
+}
+
+module "kong-ingress" {
+  source = "./modules/kong/ingress"
+  namespace = var.namespace
+
+  depends_on = [ module.kong ]
 }
