@@ -7,7 +7,7 @@ resource "kubernetes_secret" "tls" {
     type = "kubernetes.io/tls"
 
     data = {
-        "tls.crt" = filebase64("${path.module}/certs/local-dev.pem")
-        "tls.key" = filebase64("${path.module}/certs/local-dev-key.pem")
+        "tls.crt" = "${path.module}/certs/local-dev.pem"
+        "tls.key" = "${path.module}/certs/local-dev-key.pem"
     }
 }

@@ -10,6 +10,5 @@ terraform {
 }
 
 provider "kubernetes" {
-  host = var.host
   config_path = "~/.kube/config"
 }
