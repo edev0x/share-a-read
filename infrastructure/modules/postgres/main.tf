@@ -10,8 +10,10 @@ resource "kubernetes_secret" "admin" {
   }
 
   data = {
-    POSTGRES_PASSWORD = base64encode(each.value.admin_password)
+    POSTGRES_PASSWORD = each.value.admin_password
   }
+
+  type = "Opaque"
 }
 
 ############################
