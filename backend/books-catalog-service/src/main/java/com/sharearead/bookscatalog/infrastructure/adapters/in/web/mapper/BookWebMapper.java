@@ -5,7 +5,6 @@ import com.sharearead.bookscatalog.domain.model.Genre;
 import com.sharearead.bookscatalog.infrastructure.adapters.in.web.dto.response.BookResponse;
 import com.sharearead.bookscatalog.infrastructure.adapters.in.web.dto.response.GenreResponse;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface BookWebMapper {
